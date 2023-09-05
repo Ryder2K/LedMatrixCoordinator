@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LightSettings">
+
+    <top.defaults.colorpicker.ColorPickerView
+    android:id="@+id/colorPicker"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    app:enableAlpha="true"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"/>
+
+    <!--        app:underline="true"-->
+
+
+<!--    <top.defaults.view.TextButton-->
+<!--        android:id="@+id/resetColor"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="16dp"-->
+<!--        android:text="reset"-->
+<!--        android:textSize="16sp"-->
+<!--        android:textColor="@color/colorAccent"-->
+<!--        app:backgroundEffect="ripple"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/pickedColor"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/pickedColor"-->
+<!--        app:layout_constraintRight_toLeftOf="@+id/pickedColor"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"/>-->
+
+    <View
+        android:id="@+id/pickedColor"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.041"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorPicker"
+        app:layout_constraintVertical_bias="0.195" />
+
+    <TextView
+        android:id="@+id/colorHex"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="52dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/pickedColor"
+        app:layout_constraintLeft_toRightOf="@+id/pickedColor"
+        app:layout_constraintTop_toTopOf="@+id/pickedColor"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/color_apply"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="520dp"
+        android:text="Zastosuj"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.739"
+        app:layout_constraintStart_toEndOf="@+id/colorHex"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <Button-->
+<!--        android:id="@+id/btn_goback"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="56dp"-->
+<!--        android:text="Go back"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:layout_width="409dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        tools:layout_editor_absoluteX="1dp"-->
+<!--        tools:layout_editor_absoluteY="529dp">-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/editText"-->
+<!--            android:layout_width="398dp"-->
+<!--            android:layout_height="91dp"-->
+<!--            android:hint="hint" />-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+</androidx.constraintlayout.widget.ConstraintLayout>
