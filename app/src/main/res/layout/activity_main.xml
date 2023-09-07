@@ -226,4 +226,29 @@
         app:layout_constraintTop_toBottomOf="@+id/button_led13"
         app:layout_constraintVertical_bias="1.0" />
 
+    <TextView
+        android:id="@+id/mqtt_state"
+        android:layout_width="102dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginBottom="22dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintStart_toEndOf="@+id/mqtt_url"
+        app:layout_constraintTop_toBottomOf="@+id/button_led15" />
+
+    <Button
+        android:id="@+id/mqtt_reconnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:text="Reconnect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.leddriver_test1;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,24 +17,18 @@ import java.util.Locale;
 
 import butterknife.BindView;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
-
     private MqttManager mqttManager;
-    private int objectLength = 16;
+    private int objectLength = 20;
     private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
     private Integer returnColor = 0; //returned hex color value from colorpicker
     private Integer selectedButton = 0;
     private Button[] buttons = new Button[objectLength];
-    private static final String MQTT_BROKER_URI = "tcp://192.168.3.186:1883";
-    private static final String MQTT_CLIENT_ID = "laka_swiatlowodowa";
-    private static final String MQTT_TOPIC = "android/lightstring/data";
-    public static String mqttTopic = "topic/for/data";
-    public static String mqttMessage = "Hello, MQTT!";
-    public static String mqttUsername = "";
-    public static String mqttPassword = "";
-    public static String mqttURL = "tcp://192.168.3.186:1883";
-    public static String mqttClientId = "ledmatrix_app";
-
-
+    private String mqttTopic = "topic/for/data";
+    private String mqttMessage = "Hello, MQTT!";
+    private String mqttUsername = "mosquitto";
+    private String mqttPassword = "lubieplacki";
+    private String mqttURL = "tcp://192.168.3.186:1883";
+    private String mqttClientId = "ledmatrix_app";
     @BindView(R.id.button_led1) Button button_led1;
     @BindView(R.id.button_led2) Button button_led2;
     @BindView(R.id.button_led3) Button button_led3;
@@ -50,23 +45,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.button_led14) Button button_led14;
     @BindView(R.id.button_led15) Button button_led15;
     @BindView(R.id.button_led16) Button button_led16;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // lock in portrait mode
 
-        TextView mqttUrltextView = (TextView) findViewById(R.id.mqtt_url);
-        mqttUrltextView.setText("Broker URL:" + mqttURL);
 
         // Initialize mqtt
-        mqttManager = new MqttManager(this, mqttURL, mqttClientId, mqttUsername, mqttPassword);
-
+        mqttManager = MqttManager.getInstance(this, mqttURL, mqttClientId, mqttUsername, mqttPassword);
+//        mqttManager = new MqttManager(this, mqttURL, mqttClientId, mqttUsername, mqttPassword);
+        //boolean mqttConnected = mqttManager.isConnected(); //check mqtt connection state
+        updateStatus();
         // Call mqtt publish
         mqttManager.publish(mqttTopic, "Hello there");
-
         // Initialize buttons
         Button button_led1 = findViewById(R.id.button_led1);
         Button button_led2 = findViewById(R.id.button_led2);
@@ -84,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button button_led14 = findViewById(R.id.button_led14);
         Button button_led15 = findViewById(R.id.button_led15);
         Button button_led16 = findViewById(R.id.button_led16);
-
+        Button reconnectMqtt = findViewById(R.id.mqtt_reconnect);
         // add initialized buttons to array
         buttons[0] = button_led1;
         buttons[1] = button_led2;
@@ -102,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttons[13] = button_led14;
         buttons[14] = button_led15;
         buttons[15] = button_led16;
+        buttons[16] = reconnectMqtt;
         // set onClick listeners
         button_led1.setOnClickListener(this);
         button_led2.setOnClickListener(this);
@@ -119,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button_led14.setOnClickListener(this);
         button_led15.setOnClickListener(this);
         button_led16.setOnClickListener(this);
+        reconnectMqtt.setOnClickListener(this);
+        buttonsColorInit();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) { // Init context menu
@@ -126,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) { // Context menu actions
         switch (item.getItemId()) {
@@ -148,77 +144,97 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //light_settings.putExtra(Intent.EXTRA_TEXT, textToPass);
         startActivityForResult(light_settings, SECOND_ACTIVITY_REQUEST_CODE);
     }
+    private void buttonsColorInit(){
+        for(int l=0; l<=16; l++){
+            setButtonColor(l,0xFFFFFFFF);
+        }
+
+    }
+    protected void mqttConnectionState(){
+        boolean mqttConnected = mqttManager.isConnected();
+        TextView mqttState = (TextView) findViewById(R.id.mqtt_state);
+        if (mqttConnected) {
+            mqttState.setText("Connected");
+            mqttState.setTextColor(Color.parseColor("#4ef542"));
+        } else {
+            mqttState.setText("Not connected");
+            mqttState.setTextColor(Color.parseColor("#f54242"));
+        }
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_led1:
                 goToAnActivity(v);
-                selectedButton = 0;
+                selectedButton = 1;
                 break;
             case R.id.button_led2:
-                selectedButton = 1;
-                goToAnActivity(v);
-                break;
-            case R.id.button_led3:
                 selectedButton = 2;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led4:
+            case R.id.button_led3:
                 selectedButton = 3;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led5:
+            case R.id.button_led4:
                 selectedButton = 4;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led6:
+            case R.id.button_led5:
                 selectedButton = 5;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led7:
+            case R.id.button_led6:
                 selectedButton = 6;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led8:
+            case R.id.button_led7:
                 selectedButton = 7;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led9:
+            case R.id.button_led8:
                 selectedButton = 8;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led10:
+            case R.id.button_led9:
                 selectedButton = 9;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led11:
+            case R.id.button_led10:
                 selectedButton = 10;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led12:
+            case R.id.button_led11:
                 selectedButton = 11;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led13:
+            case R.id.button_led12:
                 selectedButton = 12;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led14:
+            case R.id.button_led13:
                 selectedButton = 13;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led15:
+            case R.id.button_led14:
                 selectedButton = 14;
                 goToAnActivity(v);
                 break;
-            case R.id.button_led16:
+            case R.id.button_led15:
                 selectedButton = 15;
                 goToAnActivity(v);
                 break;
-
+            case R.id.button_led16:
+                selectedButton = 16;
+                goToAnActivity(v);
+                break;
+            case R.id.mqtt_reconnect:
+                getNewSettings();
+                updateStatus();
+                mqttManager.reconnect();
+                break;
         }
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -229,28 +245,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 // Grab data from previous activity
                 String returnString = data.getStringExtra("string_color_return");
-                returnColor = data.getIntExtra("int_color_return", 0xFFFFFFF);
-
-                System.out.println("Returned value: " + returnColor);
-                setButtonColor();
-                mqttManager.publish(mqttTopic, mqttMessage);
                 TextView textView = (TextView) findViewById(R.id.textView2);
-                textView.setText(convertToString(selectedButton, returnString));
+                returnColor = data.getIntExtra("int_color_return", 0xFFFFFFF);
+                returnString = convertToString(selectedButton, returnString);
+                System.out.println("Returned value: " + returnColor);
+                setButtonColor(selectedButton - 1, returnColor);
+                textView.setText(returnString); //convertToString(selectedButton, returnString)
+                mqttMessage = returnString;
+                mqttManager.publish(mqttTopic, mqttMessage);
             }
         }
     }
+    protected void getNewSettings(){
+        Bundle extras = getIntent().getExtras();
+        if(extras !=null)
+        {
+            mqttURL = extras.getString("url");
+        }
+    }
     // Set button background color based on the selected color
-    protected void setButtonColor(){
-        buttons[selectedButton].setBackgroundColor(returnColor);
+    protected void setButtonColor(int button, int color){
+        buttons[button].setBackgroundColor(color);
+    }
+    protected void updateStatus(){
+        TextView mqttUrltextView = (TextView) findViewById(R.id.mqtt_url);
+        mqttConnectionState();
+        mqttUrltextView.setText("Broker: " + mqttURL);
     }
     private String convertToString(int value, String str){
-        int i = value;
         String finalStr = "";
-        finalStr = String.format(Locale.getDefault(), "%s ", i);
+        finalStr = String.format(Locale.getDefault(), "%s ", value);
         finalStr += str;
         return finalStr;
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();

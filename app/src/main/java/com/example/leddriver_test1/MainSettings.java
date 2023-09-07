@@ -1,15 +1,22 @@
 package com.example.leddriver_test1;
 
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
+public class MainSettings extends AppCompatActivity {
+    private MqttManager mqttManager;
+    private String mqttTopic = "topic/for/data";
+    private String mqttUsername = "mosquitto";
+    private String mqttPassword = "lubieplacki";
+    private String mqttURL = "tcp://192.168.3.186:1883";
+    private String mqttClientId = "ledmatrix_app";
 
-public class MainSettings extends AppCompatActivity { //implement onoptionclick from settingsAdapter /implements SettingsAdapter.OnOptionClickListener/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,6 +27,15 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
         EditText editTextPassword = findViewById(R.id.editTextPassword);
         EditText editTextTopic = findViewById(R.id.editTextTopic);
         Button confirmSettings = findViewById(R.id.settings_confirm_button);
+        confirmSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startIntent();
+            }
+        });
+
+        mqttManager = MqttManager.getInstance(this, mqttURL, mqttClientId, mqttUsername, mqttPassword);
+        mqttManager.disconnect();
         // Listeners for text input
         editTextURL.addTextChangedListener(new TextWatcher() {
             @Override
@@ -28,7 +44,9 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.mqttURL = s.toString();
+
+                mqttURL = s.toString();
+                //Toast.makeText(getBaseContext(), MainActivity.mqttURL, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -43,7 +61,7 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.mqttClientId = s.toString();
+                mqttClientId = s.toString();
             }
 
             @Override
@@ -58,7 +76,7 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.mqttUsername = s.toString();
+                mqttUsername = s.toString();
             }
 
             @Override
@@ -73,7 +91,7 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.mqttPassword = s.toString();
+                mqttPassword = s.toString();
             }
 
             @Override
@@ -88,13 +106,21 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                MainActivity.mqttTopic = s.toString();
+                mqttTopic = s.toString();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
+
+        }
+        protected void startIntent (){
+            Intent myIntent = new Intent(MainSettings.this, MainActivity.class);
+            myIntent.putExtra("url", mqttURL); //Optional parameters
+            MainSettings.this.startActivity(myIntent);
+        }
+
 //        RecyclerView recyclerView = findViewById(R.id.settingsRecyclerView);
 //        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // Lista opcji w menu ustawień
@@ -127,4 +153,3 @@ public class MainSettings extends AppCompatActivity { //implement onoptionclick 
 //        }
 //    }
 
-}
